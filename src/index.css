@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+/* Dark mode `.dark` klassi orqali — CusCalendar shunga tayanadi. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------
+ * Amira Bridal — dizayn token'lari.
+ * Qiymatlar HEX sifatida faqat shu blokda yashaydi; komponentlarda
+ * `bg-primary`, `text-muted`, `border-border` kabi utilitalar ishlatiladi.
+ *
+ * Uch qatlam:
+ *   1. @theme        — light (default) qiymatlar
+ *   2. .dark         — qorong'i tema ustiga yozadi
+ *   3. [data-accent] — 4 ta almashtiriladigan accent (gold/rose/sage/slate)
+ * ------------------------------------------------------------------ */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "EB Garamond", ui-serif, Georgia, serif;
+
+  /* — matn olchamlari: adminka zich, 10-13px oraligida ishlaydi — */
+  --text-micro: 10px;
+  --text-micro--line-height: 1.4;
+  --text-mini: 11px;
+  --text-mini--line-height: 1.45;
+  --text-tiny: 12px;
+  --text-tiny--line-height: 1.45;
+  --text-body: 13px;
+  --text-body--line-height: 1.5;
+
+  /* — yuzalar va matn — */
+  --color-background: #faf6f2;
+  --color-surface: #ffffff;
+  --color-border: #e5dcd2;
+  --color-border-subtle: #f0e9e1;
+  --color-foreground: #2b2622;
+  --color-muted: #6b625a;
+  --color-subtle: #a79b8d;
+
+  /* — accent (gold, default) — */
+  --color-primary: #b08d57;
+  --color-primary-fg: #ffffff;
+  --color-primary-hover: #8f7145;
+  --color-primary-soft: #f1e9e2;
+  --color-accent-2: #7d94b7;
+
+  /* — yordamchi — */
+  --color-photo: #ede4da;
+  --color-scrim: rgba(43, 38, 34, 0.42);
+  --color-overlay-dark: rgba(43, 38, 34, 0.55);
+  --color-overlay-dark-strong: rgba(43, 38, 34, 0.78);
+  --color-overlay-fg: #ffffff;
+
+  /* — status: badge juftliklari (fon + matn) — */
+  --color-danger: #b4675c;
+  --color-danger-soft: #f6e4e1;
+  --color-danger-fg: #ffffff;
+  --color-success: #3f6b4a;
+  --color-success-soft: #e8f0e9;
+  --color-warning: #8a6412;
+  --color-warning-soft: #fbf0de;
+
+  /* — burchaklar: ichkarida 4px, shell panellari 18px — */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 10px;
+  --radius-2xl: 14px;
+  --radius-3xl: 18px;
+
+  /* — soyalar — */
+  --shadow-card: 0 1px 2px rgba(43, 38, 34, 0.06);
+  --shadow-pop: 0 2px 10px rgba(176, 141, 87, 0.18);
+  --shadow-modal: 0 12px 32px rgba(43, 38, 34, 0.22);
+}
+
+/* ------------------------------------------------------------------ */
+/* 2. Qorong'i tema                                                     */
+/*                                                                      */
+/* MUHIM: quyidagi hammasi `@layer base` ichida. Layersiz CSS kaskadda   */
+/* `@layer utilities` dan ustun turadi — ya'ni `outline-none`,           */
+/* `font-sans` kabi utilitalar bu yerdagi qoidalarni bekor qila olmaydi. */
+/* ------------------------------------------------------------------ */
+@layer base {
+.dark {
+  --color-background: #1e1e20;
+  --color-surface: #232326;
+  --color-border: #3e3e43;
+  --color-border-subtle: #2d2d30;
+  --color-foreground: #ededef;
+  --color-muted: #a8a8ad;
+  --color-subtle: #77777d;
+
+  --color-primary: #c9a26a;
+  --color-primary-fg: #1e1e20;
+  --color-primary-hover: #dcc29a;
+  --color-primary-soft: #2a2a2e;
+  --color-accent-2: #8fa5c4;
+
+  --color-photo: #2a2a2d;
+  --color-scrim: rgba(0, 0, 0, 0.62);
+  --color-overlay-dark: rgba(0, 0, 0, 0.55);
+  --color-overlay-dark-strong: rgba(0, 0, 0, 0.78);
+
+  --color-danger: #d08579;
+  --color-danger-soft: #312220;
+  --color-danger-fg: #1e1e20;
+  --color-success: #9cc7a6;
+  --color-success-soft: #23301f;
+  --color-warning: #e0bc72;
+  --color-warning-soft: #302a1c;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-pop: 0 2px 10px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* ------------------------------------------------------------------ */
+/* 3. Almashtiriladigan accent — Settings ▸ Акцентный цвет              */
+/*    `gold` default, @theme da yozilgan, shuning uchun bu yerda yo'q.  */
+/* ------------------------------------------------------------------ */
+[data-accent="rose"] {
+  --color-primary: #b07a78;
+  --color-primary-hover: #8c5b59;
+  --color-primary-soft: #f3e7e6;
+  --color-accent-2: #a38fa6;
+}
+[data-accent="sage"] {
+  --color-primary: #7c8f72;
+  --color-primary-hover: #5c6d53;
+  --color-primary-soft: #e8ede4;
+  --color-accent-2: #8fa5a0;
+}
+[data-accent="slate"] {
+  --color-primary: #7d94b7;
+  --color-primary-hover: #5a7291;
+  --color-primary-soft: #e7ecf3;
+  --color-accent-2: #a08fb0;
+}
+
+.dark[data-accent="rose"] {
+  --color-primary: #c99a98;
+  --color-primary-hover: #e2c0be;
+  --color-primary-soft: #2a2a2e;
+}
+.dark[data-accent="sage"] {
+  --color-primary: #9cb090;
+  --color-primary-hover: #c3d3b8;
+  --color-primary-soft: #2a2a2e;
+}
+.dark[data-accent="slate"] {
+  --color-primary: #9ab2d3;
+  --color-primary-hover: #c3d3e8;
+  --color-primary-soft: #2a2a2e;
+}
+
+/* ------------------------------------------------------------------ */
+/* 4. Baza                                                              */
+/* ------------------------------------------------------------------ */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+
+/* Sarlavhalar — serif. Adminkada h1/h2 faqat shu ko'rinishda. */
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+}
+
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/* Umumiy focus halqasi — tugma va havolalar uchun.
+   Form maydonlari o'z ramkasi bilan ko'rsatadi, shuning uchun ular
+   `outline-none` utilitasi bilan buni bekor qiladi. */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.dark input,
+.dark select,
+.dark textarea {
+  color-scheme: dark;
+}
+
+/* Rich-editor ichidagi kontent uchun — `[contenteditable]` da Tailwind
+   preflight sarlavhalarni tekislab yuboradi, shuning uchun qo'lda. */
+[contenteditable] h3 {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0.6em 0 0.3em;
+}
+[contenteditable] h4 {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0.6em 0 0.3em;
+}
+[contenteditable] p {
+  margin: 0.4em 0;
+}
+[contenteditable] blockquote {
+  margin: 0.6em 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--color-primary);
+  color: var(--color-muted);
+}
+[contenteditable] ul,
+[contenteditable] ol {
+  margin: 0.4em 0;
+  padding-left: 22px;
+}
+[contenteditable] ul {
+  list-style: disc;
+}
+[contenteditable] ol {
+  list-style: decimal;
+}
+[contenteditable] a {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+[contenteditable][data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: var(--color-subtle);
+  pointer-events: none;
+}
+}
