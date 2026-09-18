@@ -45,7 +45,10 @@ export const ACCESSORY_TYPES = ['Veil', 'Shoes', 'Jewelry', 'Hijab', 'Belt'] as 
 
 export const SEASONS = ['All season', 'Spring/Summer', 'Autumn/Winter'] as const;
 
-/** Bir variantga ruxsat etilgan maksimal foto soni */
+/** Tovardagi rasm variantlari soni — statik */
+export const PRODUCT_VARIANTS = 3;
+
+/** Bitta variantga ruxsat etilgan maksimal foto soni */
 export const MAX_VARIANT_PHOTOS = 6;
 
 /** Медиатека mock hajmi */

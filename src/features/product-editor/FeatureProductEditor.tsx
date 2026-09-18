@@ -5,8 +5,8 @@ import { CusButton, CusEmptyState, CusStepper, useToast } from '@/components/ui'
 import { ROUTES, subcategoryPath } from '@/constants/routes';
 import { itemFromRow, newItem } from '@/features/product-editor/newItem';
 import StepBasics from '@/features/product-editor/steps/StepBasics';
+import StepColorSize from '@/features/product-editor/steps/StepColorSize';
 import StepPricing from '@/features/product-editor/steps/StepPricing';
-import StepVariants from '@/features/product-editor/steps/StepVariants';
 import type { EditorStep } from '@/features/product-editor/types';
 import { STEP_ERROR_KEYS, validateItem } from '@/features/product-editor/validate';
 import type { CatalogItem, ProductKind, StockStatus } from '@/features/products/types';
@@ -16,7 +16,7 @@ import { useCatalogStore, usePromosFor, useSubcategory } from '@/store/useCatalo
 
 const STEPS = [
   { label: 'Основное' },
-  { label: 'Варианты и размеры' },
+  { label: 'Цвет и размер' },
   { label: 'Цена и публикация' },
 ];
 
@@ -97,9 +97,9 @@ function ProductEditorForm() {
       return;
     }
 
-    const totalSizes = data.variants.reduce((acc, v) => acc + v.sizes.length, 0);
+    /* Bitta tovar — bitta o'lcham, shuning uchun zaxira ombordagi donaga bog'liq */
     const stock: StockStatus =
-      totalSizes === 0 ? 'Out of Stock' : totalSizes < 3 ? 'Low Stock' : 'In Stock';
+      data.qty <= 0 ? 'Out of Stock' : data.qty < 3 ? 'Low Stock' : 'In Stock';
 
     const existing = id ? (products[subId] ?? []).find((p) => p.id === id) : null;
 
@@ -113,7 +113,7 @@ function ProductEditorForm() {
           : data.material || 'Не указано',
       price: toNumber(data.price),
       stock,
-      colors: data.variants.map((v) => v.colorName).filter(Boolean),
+      color: data.colorName,
       isHidden: existing?.isHidden,
       isBlurred: data.isBlurred,
     });
@@ -147,7 +147,7 @@ function ProductEditorForm() {
       />
 
       {step === 0 && <StepBasics data={data} errors={visible} patch={patch} />}
-      {step === 1 && <StepVariants data={data} errors={visible} patch={patch} />}
+      {step === 1 && <StepColorSize data={data} errors={visible} patch={patch} />}
       {step === 2 && (
         <StepPricing data={data} errors={visible} patch={patch} promos={promos} />
       )}

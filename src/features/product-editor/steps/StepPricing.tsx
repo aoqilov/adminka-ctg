@@ -19,7 +19,7 @@ type Props = {
 export default function StepPricing({ data, errors, patch, promos }: Props) {
   const navigate = useNavigate();
   const price = toNumber(data.price);
-  const totalSizes = data.variants.reduce((acc, v) => acc + v.sizes.length, 0);
+  const size = data.kind === 'dress' ? data.sizeRu : data.oneSize ? 'Один размер' : data.sizeLabel;
 
   return (
     <div className="max-w-3xl">
@@ -135,9 +135,9 @@ export default function StepPricing({ data, errors, patch, promos }: Props) {
         </div>
 
         <div className="rounded-sm border border-border bg-background p-4 text-mini text-subtle">
-          {totalSizes === 0
-            ? 'inStock: false — размеры не выбраны'
-            : `inStock: true · ${totalSizes} размеров по вариантам`}
+          {!size
+            ? 'inStock: false — размер не выбран'
+            : `inStock: ${data.qty > 0} · размер ${size} · ${data.qty} шт.`}
         </div>
       </div>
     </div>

@@ -191,7 +191,31 @@ export const useCatalogStore = create<CatalogState & CatalogActions>()(
 
       removePost: (id) => set((s) => ({ posts: s.posts.filter((n) => n.id !== id) })),
     }),
-    { name: 'bridal-catalog', version: 1 },
+    {
+      name: 'bridal-catalog',
+      version: 2,
+      /**
+       * v1 → v2: rang varianti o'rniga bitta rang. Eski qatorlarda
+       * `colors: string[]` bo'lgan — birinchisi tovar rangi bo'lib qoladi,
+       * qolgan ma'lumot (kategoriyalar, aksiyalar, postlar) saqlanadi.
+       */
+      migrate: (persisted, version) => {
+        const state = persisted as CatalogState;
+        if (version >= 2) return state as CatalogState & CatalogActions;
+
+        const products = Object.fromEntries(
+          Object.entries(state.products ?? {}).map(([subId, rows]) => [
+            subId,
+            (rows as (ProductRow & { colors?: string[] })[]).map(({ colors, ...row }) => ({
+              ...row,
+              color: row.color || colors?.[0] || '',
+            })),
+          ]),
+        );
+
+        return { ...state, products } as CatalogState & CatalogActions;
+      },
+    },
   ),
 );
 

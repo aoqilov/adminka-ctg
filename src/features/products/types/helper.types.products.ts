@@ -20,16 +20,15 @@ export type DressSize = {
   label: string;
 };
 
-/** Rang varianti — har birida o'z fotolari va o'lchamlari */
+/**
+ * Rasm varianti — bitta modelning bitta suratga olish to'plami.
+ * Rang va o'lcham variantda emas, tovarning o'zida: variant faqat fotolarni
+ * guruhlaydi. Tovarda variantlar soni qat'iy — `PRODUCT_VARIANTS`.
+ */
 export type Variant = {
   id: Id;
-  colorName: string;
-  hex: string;
-  /** Медиатека fayl id'lari, maksimum 6 ta */
+  /** Медиатека fayl id'lari, maksimum `MAX_VARIANT_PHOTOS` ta */
   media: string[];
-  qty: number;
-  /** RU o'lchamlar — faqat ko'ylaklarda */
-  sizes: number[];
 };
 
 type ItemBase = {
@@ -64,7 +63,17 @@ type ItemBase = {
    * Juda qimmat modellarni ochiq ko'rsatmaslik uchun — salon egasi qaroriga ko'ra.
    */
   isBlurred: boolean;
+  /**
+   * Rang — bitta tovarga bitta rang. Salon har bir modelni alohida nusxada
+   * oladi, shuning uchun rang varianti emas, tovarning o'z maydoni.
+   * `colorName` palitradan (Магазин ▸ Цвета), `hex` esa o'sha rangning nusxasi.
+   */
+  colorName: string;
+  hex: string;
+  /** Rasm variantlari — qat'iy 3 ta, har birida 6 tagacha foto */
   variants: Variant[];
+  /** Omborda necha dona bor */
+  qty: number;
 };
 
 export type Dress = ItemBase & {
@@ -77,13 +86,16 @@ export type Dress = ItemBase & {
   decorations: string[];
   corsetType: CorsetType;
   hasLining: boolean;
+  /** RU o'lcham — bitta tovarga bitta o'lcham; tanlanmagan bo'lsa `null` */
+  sizeRu: number | null;
 };
 
 export type Accessory = ItemBase & {
   kind: 'accessory';
   accessoryType: AccessoryType | '';
   oneSize: boolean;
-  sizeLabels: string[];
+  /** Bitta o'lcham yorlig'i — `oneSize` yoqilganda bo'sh qoladi */
+  sizeLabel: string;
   material: string;
 };
 
@@ -100,7 +112,8 @@ export type ProductRow = {
   fabric: string;
   price: number;
   stock: StockStatus;
-  colors: string[];
+  /** Tovar rangi — bitta tovarga bitta rang */
+  color: string;
   /** Saytda yashirilgan, lekin bazada qoladi */
   isHidden?: boolean;
   /** Saytda fotolari xiralashtiriladi, nomi ko'rinadi */

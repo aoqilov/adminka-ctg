@@ -1,7 +1,7 @@
 import type { CatalogItem } from '@/features/products/types';
 import type { Id } from '@/types/common';
 
-/** 0 — Основное · 1 — Варианты и размеры · 2 — Цена и публикация */
+/** 0 — Основное · 1 — Цвет и размер · 2 — Цена и публикация */
 export type EditorStep = 0 | 1 | 2;
 
 /** Медиатека elementi — mock bosqichda faqat id va yorliq */
@@ -20,12 +20,11 @@ export type ProductErrorKey =
   | 'price'
   | 'rentPrice'
   | 'rentDays'
+  | 'colorName'
   | 'variants'
-  | 'variantColor'
-  | 'variantPhotos'
   | 'silhouette'
-  | 'sizes'
-  | 'sizeLabels';
+  | 'sizeRu'
+  | 'sizeLabel';
 
 export type EditorState = {
   /** Tahrirlanayotgan tovar id'si; yangi tovarda `null` */

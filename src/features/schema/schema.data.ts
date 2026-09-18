@@ -12,6 +12,10 @@ export const BASE_FIELDS: readonly SchemaRow[] = [
   ['brand', 'string', 'нет', 'text', 'Карточка, фильтр'],
   ['categoryId', 'string', 'да', 'select', 'Навигация, хлебные крошки'],
   ['subcategoryId', 'string', 'да', 'select', 'Навигация, хлебные крошки'],
+  ['colorName', 'string (из палитры)', 'да', 'select + swatch', 'Фильтр по цвету'],
+  ['hex', 'string (#RRGGBB)', 'авто', '— (копия палитры)', 'Точка цвета в карточке'],
+  ['variants', 'Variant[] (ровно 3, фото 0–6 в каждом)', 'да (≥1 фото)', 'drag & drop', 'Галерея товара'],
+  ['qty', 'number', 'да', 'number', 'inStock, бейдж остатка'],
   ['price', 'number > 0', 'да', 'number', 'Карточка, таблица'],
   ['oldPrice', 'number | null', 'нет', 'number', 'Бейдж скидки'],
   ['currency', "'USD' | 'UZS'", 'да', 'select', 'Формат цены'],
@@ -39,13 +43,13 @@ export const DRESS_FIELDS: readonly SchemaRow[] = [
   ['decorations', 'string[]', 'нет', 'multi-chip'],
   ['corsetType', "'None' | 'Lace-up' | 'Zip' | 'Boned'", 'нет', 'select'],
   ['hasLining', 'boolean', 'нет', 'switch'],
-  ['sizes', 'DressSize[] (RU 40–56)', 'да (≥1)', 'size grid'],
+  ['sizeRu', 'number | null (RU 40–56)', 'да', 'size grid (один выбор)'],
 ].map(([name, type, req, control]) => ({ name, type, req, control }));
 
 export const ACC_FIELDS: readonly SchemaRow[] = [
   ['accessoryType', "'Veil' | 'Shoes' | 'Jewelry' | 'Hijab' | 'Belt'", 'да', 'select'],
   ['oneSize', 'boolean', 'да', 'switch'],
-  ['sizeLabels', 'string[]', 'если oneSize=false — да', 'multi-chip'],
+  ['sizeLabel', 'string', 'если oneSize=false — да', 'chip (один выбор)'],
   ['material', 'string', 'нет', 'text'],
 ].map(([name, type, req, control]) => ({ name, type, req, control }));
 
@@ -58,16 +62,15 @@ export const VALIDATION_RULES: readonly ValidationRule[] = [
   ['oldPrice', 'Старая цена должна быть больше текущей'],
   ['deliveryDays', 'Укажите срок доставки в днях'],
   ['rentPrice', 'Укажите цену аренды'],
-  ['variants', 'Добавьте минимум один вариант'],
-  ['variantColor', 'У каждого варианта должен быть указан цвет'],
-  ['variantPhotos', 'Добавьте минимум одно фото для каждого варианта'],
-  ['sizes', 'Выберите хотя бы один размер или включите «Один размер»'],
+  ['colorName', 'Выберите цвет товара'],
+  ['variants', 'Добавьте минимум одно фото'],
+  ['sizeRu / sizeLabel', 'Выберите размер или включите «Один размер»'],
 ].map(([field, msg], i) => ({ n: String(i + 1).padStart(2, '0'), field, msg }));
 
 export const DTO_LIST: readonly SchemaNote[] = [
   {
     name: 'CreateItemDto',
-    body: 'Omit<CatalogItem, "id" | "slug" | "inStock" | "createdAt"> + variants: CreateVariantDto[]',
+    body: 'Omit<CatalogItem, "id" | "slug" | "inStock" | "createdAt">',
   },
   { name: 'UpdateItemDto', body: 'Partial<CreateItemDto> & { id: string }' },
   {
@@ -77,7 +80,7 @@ export const DTO_LIST: readonly SchemaNote[] = [
 ];
 
 export const RELATED_LIST: readonly SchemaNote[] = [
-  { name: 'Booking', body: 'itemId · variantId · sizeRu · fittingDate · clientPhone · status' },
+  { name: 'Booking', body: 'itemId · fittingDate · clientPhone · status' },
   { name: 'Review', body: 'itemId · rating 1–5 · textRu · authorName · isPublished' },
   {
     name: 'Discount (акция)',
@@ -91,12 +94,18 @@ export const RELATED_LIST: readonly SchemaNote[] = [
 
 export const EMPTY_STATES: readonly SchemaNote[] = [
   { name: 'Нет цены', body: 'price = 0 → «Цена по запросу», кнопка заказа отключена.' },
-  { name: 'Один вариант', body: 'variants.length === 1 → выбор цвета скрыт, только фото.' },
   {
-    name: 'Все размеры закончились',
-    body: 'inStock = false → «Нет в наличии» + «Сообщить о поступлении».',
+    name: 'Один цвет и размер',
+    body: 'Салон берёт каждую модель в одном экземпляре — выбора цвета и размера на сайте нет. Три варианта хранят только фото.',
   },
-  { name: 'Нет фото', body: 'photos = 0 → рамка-заглушка + ошибка валидации в админке.' },
+  {
+    name: 'Товар продан',
+    body: 'qty = 0 → inStock = false → «Нет в наличии» + «Сообщить о поступлении».',
+  },
+  {
+    name: 'Нет фото',
+    body: 'Все три варианта пусты → рамка-заглушка + ошибка валидации в админке.',
+  },
   { name: 'Пустая подкатегория', body: '0 товаров → CTA «Добавить первый товар».' },
 ];
 
@@ -118,10 +127,12 @@ export const JSON_SAMPLE = `{
   "fabricDetails": ["Silk", "French lace"],
   "decorations": ["Beading"],
   "hasLining": true,
-  "sizes": [{ "ru": 44, "bust": 92, "waist": 74, "hips": 100, "qty": 2 }],
-  "variants": [{
-    "id": "v1", "colorName": "Ivory", "hex": "#F1E9E2", "qty": 3,
-    "photos": ["celeste-lace-gown_ivory_01.jpg", "celeste-lace-gown_ivory_02.jpg"]
-  }],
+  "colorName": "Ivory", "hex": "#F1E9E2", "qty": 1,
+  "sizeRu": 44,
+  "variants": [
+    { "id": "v1", "media": ["celeste-lace-gown_ivory_v1_01.jpg", "celeste-lace-gown_ivory_v1_02.jpg"] },
+    { "id": "v2", "media": ["celeste-lace-gown_ivory_v2_01.jpg"] },
+    { "id": "v3", "media": [] }
+  ],
   "computed": { "primaryPrice": 4800, "offerPrice": 4200, "discountPercent": 13 }
 }`;

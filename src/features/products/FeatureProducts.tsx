@@ -98,7 +98,7 @@ export default function FeatureProducts() {
         }
 
         if (p.price < min || p.price > max) return false;
-        if (color && !p.colors.includes(color)) return false;
+        if (color && p.color !== color) return false;
 
         return !query || `${p.name} ${p.sku} ${p.fabric} ${p.path}`.toLowerCase().includes(query);
       }),

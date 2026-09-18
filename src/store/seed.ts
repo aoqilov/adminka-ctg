@@ -48,7 +48,7 @@ export const SEED_PRODUCTS: Record<Id, ProductRow[]> = {
       fabric: 'Silk & French Lace',
       price: 4200,
       stock: 'In Stock',
-      colors: ['Ivory', 'Champagne'],
+      color: 'Ivory',
     },
     {
       id: '2',
@@ -57,7 +57,7 @@ export const SEED_PRODUCTS: Record<Id, ProductRow[]> = {
       fabric: 'Mikado Duchess Satin',
       price: 3850,
       stock: 'Low Stock',
-      colors: ['Champagne'],
+      color: 'Champagne',
     },
     {
       id: '3',
@@ -66,7 +66,7 @@ export const SEED_PRODUCTS: Record<Id, ProductRow[]> = {
       fabric: 'Tulle & Beading',
       price: 5100,
       stock: 'Out of Stock',
-      colors: ['White', 'Blush'],
+      color: 'White',
     },
     {
       id: '4',
@@ -75,7 +75,7 @@ export const SEED_PRODUCTS: Record<Id, ProductRow[]> = {
       fabric: 'Chiffon',
       price: 2950,
       stock: 'In Stock',
-      colors: ['Ivory'],
+      color: 'Ivory',
     },
   ],
   mermaid: [
@@ -86,7 +86,7 @@ export const SEED_PRODUCTS: Record<Id, ProductRow[]> = {
       fabric: 'Crepe',
       price: 4600,
       stock: 'In Stock',
-      colors: ['Ivory', 'Nude'],
+      color: 'Ivory',
     },
     {
       id: '6',
@@ -95,7 +95,7 @@ export const SEED_PRODUCTS: Record<Id, ProductRow[]> = {
       fabric: 'Lace overlay',
       price: 4990,
       stock: 'Low Stock',
-      colors: ['White'],
+      color: 'White',
     },
   ],
   ball: [
@@ -106,7 +106,7 @@ export const SEED_PRODUCTS: Record<Id, ProductRow[]> = {
       fabric: 'Organza',
       price: 6200,
       stock: 'In Stock',
-      colors: ['Ivory'],
+      color: 'Ivory',
     },
   ],
   scarf: [
@@ -117,7 +117,7 @@ export const SEED_PRODUCTS: Record<Id, ProductRow[]> = {
       fabric: 'Mulberry silk',
       price: 180,
       stock: 'In Stock',
-      colors: ['Blush', 'Powder Blue'],
+      color: 'Blush',
     },
   ],
   sets: [
@@ -128,7 +128,7 @@ export const SEED_PRODUCTS: Record<Id, ProductRow[]> = {
       fabric: 'Crepe set',
       price: 640,
       stock: 'In Stock',
-      colors: ['Sage'],
+      color: 'Sage',
     },
   ],
   heels: [
@@ -139,7 +139,7 @@ export const SEED_PRODUCTS: Record<Id, ProductRow[]> = {
       fabric: 'Satin',
       price: 320,
       stock: 'Low Stock',
-      colors: ['Champagne'],
+      color: 'Champagne',
     },
   ],
   flats: [
@@ -150,7 +150,7 @@ export const SEED_PRODUCTS: Record<Id, ProductRow[]> = {
       fabric: 'Satin',
       price: 240,
       stock: 'In Stock',
-      colors: ['Ivory'],
+      color: 'Ivory',
     },
   ],
   oxford: [
@@ -161,7 +161,7 @@ export const SEED_PRODUCTS: Record<Id, ProductRow[]> = {
       fabric: 'Calf leather',
       price: 410,
       stock: 'In Stock',
-      colors: ['Black'],
+      color: 'Black',
     },
   ],
 };

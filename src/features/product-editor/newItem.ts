@@ -1,6 +1,12 @@
-import type { CatalogItem, ProductKind, ProductRow } from '@/features/products/types';
+import { PRODUCT_VARIANTS } from '@/constants/catalog';
+import { DEFAULT_PALETTE } from '@/constants/store';
+import type { CatalogItem, ProductKind, ProductRow, Variant } from '@/features/products/types';
 import { makeId } from '@/lib/slug';
 import type { Id } from '@/types/common';
+
+/** Bo'sh variantlar — soni qat'iy, faqat fotolari to'ldiriladi */
+const emptyVariants = (): Variant[] =>
+  Array.from({ length: PRODUCT_VARIANTS }, () => ({ id: makeId('v_'), media: [] }));
 
 /** Bo'sh tovar — dizayn prototipidagi `newItem()` bilan bir xil qiymatlar */
 export function newItem(kind: ProductKind, categoryId: Id, subcategoryId: Id): CatalogItem {
@@ -32,9 +38,10 @@ export function newItem(kind: ProductKind, categoryId: Id, subcategoryId: Id): C
     rentDays: '3',
     sortOrder: '0',
     isBlurred: false,
-    variants: [
-      { id: makeId('v_'), colorName: '', hex: '#F1E9E2', media: [], qty: 1, sizes: [] },
-    ],
+    colorName: '',
+    hex: '#F1E9E2',
+    variants: emptyVariants(),
+    qty: 1,
   };
 
   if (kind === 'dress') {
@@ -49,6 +56,7 @@ export function newItem(kind: ProductKind, categoryId: Id, subcategoryId: Id): C
       decorations: [],
       corsetType: 'None',
       hasLining: true,
+      sizeRu: null,
     };
   }
 
@@ -57,7 +65,7 @@ export function newItem(kind: ProductKind, categoryId: Id, subcategoryId: Id): C
     kind: 'accessory',
     accessoryType: '',
     oneSize: true,
-    sizeLabels: [],
+    sizeLabel: '',
     material: '',
   };
 }
@@ -75,8 +83,7 @@ export function itemFromRow(
 ): CatalogItem {
   const draft = newItem(kind, categoryId, subcategoryId);
 
-  return {
-    ...draft,
+  const common = {
     id: row.id,
     isBlurred: !!row.isBlurred,
     nameRu: row.name,
@@ -84,16 +91,13 @@ export function itemFromRow(
     composition: row.fabric,
     price: String(row.price),
     descriptionRu: `<p>${row.name} — ${row.fabric}. Изысканная модель из коллекции Amira Bridal.</p>`,
-    status: 'Active',
-    variants: row.colors.length
-      ? row.colors.map((colorName, i) => ({
-          id: makeId(`v${i}_`),
-          colorName,
-          hex: '#F1E9E2',
-          media: [`M${String(i + 1).padStart(2, '0')}`],
-          qty: 1,
-          sizes: [44, 46],
-        }))
-      : draft.variants,
+    status: 'Active' as const,
+    colorName: row.color,
+    hex: DEFAULT_PALETTE.find((c) => c.name === row.color)?.hex ?? draft.hex,
+    variants: emptyVariants().map((v, i) => (i === 0 ? { ...v, media: ['M01'] } : v)),
   };
+
+  return draft.kind === 'dress'
+    ? { ...draft, ...common, sizeRu: 44 }
+    : { ...draft, ...common };
 }

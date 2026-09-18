@@ -5,7 +5,7 @@ import { toNumber } from '@/lib/format';
 /** Har qadamda tekshiriladigan maydonlar */
 export const STEP_ERROR_KEYS: readonly (readonly ProductErrorKey[])[] = [
   ['nameRu', 'subcategoryId', 'descriptionRu'],
-  ['sizes', 'sizeLabels', 'variants', 'variantColor', 'variantPhotos'],
+  ['colorName', 'variants', 'sizeRu', 'sizeLabel'],
   ['price', 'rentPrice', 'rentDays'],
 ];
 
@@ -34,20 +34,15 @@ export function validateItem(d: CatalogItem): ProductErrors {
     errors.rentDays = 'Укажите срок аренды в днях';
   }
 
-  if (!d.variants.length) errors.variants = 'Добавьте минимум один вариант';
-  if (d.variants.some((v) => !v.colorName.trim())) {
-    errors.variantColor = 'У каждого варианта должен быть указан цвет';
-  }
-  if (d.variants.some((v) => v.media.length < 1)) {
-    errors.variantPhotos = 'Добавьте минимум одно фото для каждого варианта';
+  if (!d.colorName.trim()) errors.colorName = 'Выберите цвет товара';
+  if (!d.variants.some((v) => v.media.length)) {
+    errors.variants = 'Добавьте минимум одно фото';
   }
 
   if (d.kind === 'dress') {
-    if (!d.variants.some((v) => v.sizes.length)) {
-      errors.sizes = 'Выберите хотя бы один размер у варианта';
-    }
-  } else if (!d.oneSize && !d.sizeLabels.length) {
-    errors.sizeLabels = 'Укажите размеры или включите «Один размер»';
+    if (d.sizeRu === null) errors.sizeRu = 'Выберите размер товара';
+  } else if (!d.oneSize && !d.sizeLabel) {
+    errors.sizeLabel = 'Укажите размер или включите «Один размер»';
   }
 
   return errors;
